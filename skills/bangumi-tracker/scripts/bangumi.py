@@ -38,7 +38,9 @@ WATCHLIST = DATA / "watchlist.json"
 CALENDAR_CACHE = DATA / "calendar_cache.json"
 CACHE_TTL_S = 6 * 3600
 MAX_WATCH = 50
-_CTRL = re.compile("[\x00-\x1f\x7f​-‏‪-‮⁠-⁤﻿]")
+# Code-point ranges, written as numbers so the source holds no invisible characters.
+_INVISIBLE_RANGES = ((0x00, 0x1F), (0x7F, 0x7F), (0x200B, 0x200F), (0x202A, 0x202E), (0x2060, 0x2064), (0xFEFF, 0xFEFF))
+_CTRL = re.compile("[" + "".join(re.escape(chr(a)) + "-" + re.escape(chr(b)) for a, b in _INVISIBLE_RANGES) + "]")
 
 
 def clean(text: object, limit: int = 80) -> str:
